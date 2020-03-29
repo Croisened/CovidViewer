@@ -1,2 +1,5 @@
 # CovidViewer
 Data visualizer for COVID-19 
+
+Making use of the Globe data visualizer originally created by Abdullah Aldandarawy
+https://Dandarawy.github.io
