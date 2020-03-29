@@ -6,6 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Unity3DGlobe/Scenes/population.unity
+    path: Assets/Unity3DGlobe/Scenes/CovidViewerScene.unity
     guid: 4cc116b224f6c474b83822315acf3653
   m_configObjects: {}
