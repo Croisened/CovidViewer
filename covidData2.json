@@ -1,0 +1,32 @@
+{
+  "AllData": [
+    {
+      "FIPS": 45001,
+      "Admin2": "Abbeville",
+      "Province_State": "South Carolina",
+      "Country_Region": "US",
+      "Last_Update": "2020-03-27 22:14:55",
+      "Lat": 34.22333378,
+      "Long_": -82.46170658,
+      "Confirmed": 4,
+      "Deaths": 0,
+      "Recovered": 0,
+      "Active": 0,
+      "Combined_Key": "Abbeville, South Carolina, US"
+    },
+    {
+      "FIPS": 22001,
+      "Admin2": "Acadia",
+      "Province_State": "Louisiana",
+      "Country_Region": "US",
+      "Last_Update": "2020-03-27 22:14:55",
+      "Lat": 30.295064899999996,
+      "Long_": -92.41419698,
+      "Confirmed": 8,
+      "Deaths": 1,
+      "Recovered": 0,
+      "Active": 0,
+      "Combined_Key": "Acadia, Louisiana, US"
+    }
+]
+}
