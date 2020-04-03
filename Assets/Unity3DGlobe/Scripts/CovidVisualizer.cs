@@ -12,11 +12,21 @@ public class CovidVisualizer : MonoBehaviour
     public float maxLengthOfDataPoint = 2.0f;
     GameObject[] seriesObjects;
     int currentSeries = 0;
+    int indexOfSortButton = 0;
+    Locations covidLocations;
+
+
     public void CreateMeshes(Locations covid)
     {
+        covidLocations = covid;
+        PopulateTheEarth();
+    }
+
+    public void PopulateTheEarth() { 
+
         //Debug.Log($"How many locations: {covid.AllData.Length}");
 
-        seriesObjects = new GameObject[covid.AllData.Length];
+        seriesObjects = new GameObject[covidLocations.AllData.Length];
         GameObject p = Instantiate<GameObject>(PointPrefab);
         Vector3[] verts = p.GetComponent<MeshFilter>().mesh.vertices;
         int[] indices = p.GetComponent<MeshFilter>().mesh.triangles;
@@ -25,15 +35,27 @@ public class CovidVisualizer : MonoBehaviour
         List<int> meshIndices = new List<int>(117000);
         List<Color> meshColors = new List<Color>(65000);
 
-        for (int i = 0; i < covid.AllData.Length; i++)
+        for (int i = 0; i < covidLocations.AllData.Length; i++)
         {
 
             //Debug.Log($"Location: {covid.AllData[i].Province_State} lat: {covid.AllData[i].Lat} long: {covid.AllData[i].Long_}");
-            float lat = GetSafeFloatFromString(covid.AllData[i].Lat);
+            float lat = GetSafeFloatFromString(covidLocations.AllData[i].Lat);
 
-            float lng = GetSafeFloatFromString(covid.AllData[i].Long_);
+            float lng = GetSafeFloatFromString(covidLocations.AllData[i].Long_);
 
-            float value = GetSafeFloatFromString(covid.AllData[i].Confirmed);
+            float value;
+            if(indexOfSortButton == 1)
+            {
+                value = GetSafeFloatFromString(covidLocations.AllData[i].Deaths);
+            }
+            else if(indexOfSortButton == 2)
+            {
+                value = GetSafeFloatFromString(covidLocations.AllData[i].Recovered);
+            }
+            else
+            {
+                value = GetSafeFloatFromString(covidLocations.AllData[i].Confirmed);
+            }
 
             if ((lat != 0.0f) && (lng != 0.0f))
             {
@@ -45,9 +67,9 @@ public class CovidVisualizer : MonoBehaviour
 
 
 
-                p.GetComponent<PointData>().loc = covid.AllData[i];
+                p.GetComponent<PointData>().loc = covidLocations.AllData[i];
 
-                Debug.Log($"Last location: {covid.AllData[i].Combined_Key}");
+                Debug.Log($"Last location: {covidLocations.AllData[i].Combined_Key}");
 
                 AppendPointVertices(p, verts, indices, lng, lat, value, meshVertices, meshIndices, meshColors);
 
@@ -147,6 +169,31 @@ public class CovidVisualizer : MonoBehaviour
 
         }
     }
+
+    public void RefreshData(int btnIndex)
+    {
+        indexOfSortButton = btnIndex;
+
+        ClearTheEarth();
+
+    }
+
+    private void ClearTheEarth()
+    {
+        Transform[] allDataPoints = Earth.GetComponentsInChildren<Transform>();
+
+        foreach(Transform t in allDataPoints)
+        {
+            if(t.gameObject.name != "Earth")
+            {
+                Destroy(t.gameObject);
+            }
+        }
+
+        PopulateTheEarth();
+
+    }
+
 }
 
 
