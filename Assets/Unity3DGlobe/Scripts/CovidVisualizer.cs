@@ -27,18 +27,29 @@ public class CovidVisualizer : MonoBehaviour
 
         for (int i = 0; i < covid.AllData.Length; i++)
         {
+
             //Debug.Log($"Location: {covid.AllData[i].Province_State} lat: {covid.AllData[i].Lat} long: {covid.AllData[i].Long_}");
+            float lat = GetSafeFloatFromString(covid.AllData[i].Lat);
 
-            GameObject seriesObj = new GameObject("COVID-19");
-            seriesObj.transform.parent = Earth.transform;
-            seriesObjects[i] = seriesObj;
+            float lng = GetSafeFloatFromString(covid.AllData[i].Long_);
 
-            float lat =  float.Parse(covid.AllData[i].Lat);
-            float lng = float.Parse(covid.AllData[i].Long_);
-            float value = float.Parse(covid.AllData[i].Confirmed);
-            p.GetComponent<PointData>().loc = covid.AllData[i];
+            float value = GetSafeFloatFromString(covid.AllData[i].Confirmed);
 
-            AppendPointVertices(p, verts, indices, lng, lat, value, meshVertices, meshIndices, meshColors);
+            if ((lat != 0.0f) && (lng != 0.0f))
+            {
+
+
+                GameObject seriesObj = new GameObject("COVID-19");
+                seriesObj.transform.parent = Earth.transform;
+                seriesObjects[i] = seriesObj;
+
+
+
+                p.GetComponent<PointData>().loc = covid.AllData[i];
+
+                Debug.Log($"Last location: {covid.AllData[i].Combined_Key}");
+
+                AppendPointVertices(p, verts, indices, lng, lat, value, meshVertices, meshIndices, meshColors);
 
                 /*
                 if (meshVertices.Count + verts.Length > 65000)
@@ -50,17 +61,30 @@ public class CovidVisualizer : MonoBehaviour
                 }
                 */
 
-            CreateObject(meshVertices, meshIndices, meshColors, seriesObj,p);
-            meshVertices.Clear();
-            meshIndices.Clear();
-            meshColors.Clear();
-            //seriesObjects[i].SetActive(false);
+                CreateObject(meshVertices, meshIndices, meshColors, seriesObj, p);
+                meshVertices.Clear();
+                meshIndices.Clear();
+                meshColors.Clear();
+                //seriesObjects[i].SetActive(false);
+            }
+
+
+            seriesObjects[currentSeries].SetActive(true);
+            Destroy(p);
+
         }
-
-
-        seriesObjects[currentSeries].SetActive(true);
-        Destroy(p);
     }
+
+    private float GetSafeFloatFromString(string floatToCheck)
+    {
+        float safeFloat = 0.0f;
+
+        safeFloat = float.TryParse(floatToCheck, out safeFloat) ? safeFloat : 0.0f;
+
+        return safeFloat;
+    }
+
+
     private void AppendPointVertices(GameObject p, Vector3[] verts, int[] indices, float lng, float lat, float value, List<Vector3> meshVertices,
     List<int> meshIndices,
     List<Color> meshColors)
@@ -81,7 +105,6 @@ public class CovidVisualizer : MonoBehaviour
         }
 
         p.transform.localScale = new Vector3(1, 1, theZ);
-        Debug.Log($"The length is: {p.transform.localScale.z.ToString()}");
 
         p.transform.LookAt(pos * 2);
 
