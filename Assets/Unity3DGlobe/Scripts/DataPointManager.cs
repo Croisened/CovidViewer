@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class DataPointManager : MonoBehaviour
 {
@@ -14,19 +15,14 @@ public class DataPointManager : MonoBehaviour
     public LayerMask layers;
 
     [Header("Details Panel Fields")]
-    public Text Country;
-    public Text Location;
-    public Text Confirmed;
-    public Text Deaths;
-    public Text Recoverd;
-    public Text Active;
-    public Text LastUpdated;
+    public TMP_Text Feed;
 
     // Start is called before the first frame update
     void Start()
     {
         //StartCoroutine(SpawnRequiredBubbles(false, transform.position));
         mainCamera = Camera.main;
+        Feed.text = string.Empty;
     }
 
     // Update is called once per frame
@@ -68,13 +64,50 @@ public class DataPointManager : MonoBehaviour
 
     private void UpdateDetails(PointData pd)
     {
-        Country.text = pd.loc.Country_Region;
-        Location.text = pd.loc.Combined_Key;
-        Confirmed.text = pd.loc.Confirmed;
-        Deaths.text = pd.loc.Deaths;
-        Recoverd.text = pd.loc.Recovered;
-        Active.text = pd.loc.Active;
-        LastUpdated.text = pd.loc.Last_Update;
+        StopAllCoroutines();
+        string feedOutput = string.Empty;
+
+        //Build the feed....
+        feedOutput = $"Country: {pd.loc.Country_Region} \n";
+        feedOutput += $"Location: {pd.loc.Combined_Key} \n";
+        feedOutput += $"Confirmed: {pd.loc.Confirmed} \n";
+        feedOutput += $"Deaths: {pd.loc.Deaths} \n";
+        feedOutput += $"Recoverd: {pd.loc.Recovered} \n";
+        feedOutput += $"Active: {pd.loc.Active} \n";
+        feedOutput += $"Last Updated: {pd.loc.Last_Update}";
+
+        Feed.richText = true;
+        Feed.text = feedOutput;
+
+        StartCoroutine(UpdateFeed());
+
     }
+
+    public IEnumerator UpdateFeed()
+    {
+        int totalVisibleCharacters = Feed.text.Length;
+        Debug.Log($"Total Characters: {totalVisibleCharacters.ToString()}");
+
+        int counter = 0;
+
+        while (counter < totalVisibleCharacters)
+        {
+            int visibleCount = counter % (totalVisibleCharacters + 1);
+
+            Debug.Log($"VisibleCount: {visibleCount}");
+
+            Feed.maxVisibleCharacters = visibleCount;
+
+           // if (visibleCount >= totalVisibleCharacters)
+           // {
+           //     yield return new WaitForSeconds(1.0f);
+           // }
+
+            counter += 1;
+            yield return new WaitForSeconds(0.04f);
+        }
+    }
+
+
 
 }
